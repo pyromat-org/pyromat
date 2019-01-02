@@ -607,7 +607,7 @@ might be specified
     
     
     def _iter1(self, fn, prop, y, x, Ids, xmin, xmax,
-                ep=1e-6, Nmax=20, fx_index=1, 
+                ep=1e-6, relax=1, Nmax=20, fx_index=1,
                 verbose=False, param={}):
         """Invert an inner routine.
         
@@ -638,6 +638,7 @@ xmin, xmax  Upper and lower limit arrays for the x values.  These must
             bisection process.
 *** Optional Parameters ***
 ep          Epsilon; fractional error permitted in y (default 1e-6)
+relax       Relaxation coefficient, slows convergence (default 1.0)
 Nmax        Maximum number of iterations (default 20)
 fx_index    The location of the property derivative in the call 
             signature (default 1)
@@ -685,14 +686,14 @@ param       A dicitonary of keyword arguments are passed directly to the
             dx[Ids] = error[Ids] / yyx
             if verbose:
                 print(x, yy, yyx, dx, Ids)
-            x[Ids] += dx[Ids]
+            x[Ids] += relax*dx[Ids]
             # An out-of-bounds index
             #IooB = np.logical_or( x < xmin, x > xmax)
             IooB[Ids] = np.logical_or( x[Ids] < xmin[Ids], x[Ids] > xmax[Ids])
             count_oob = 0
             while IooB[Ids].any():
                 dx[IooB] /= 2.
-                x[IooB] -= dx[IooB]
+                x[IooB] -= relax*dx[IooB]
                 IooB[Ids] = np.logical_or( x[Ids] < xmin[Ids], x[Ids] > xmax[Ids])
                 # Prevent a while-loop-trap
                 count_oob += 1
@@ -712,7 +713,7 @@ param       A dicitonary of keyword arguments are passed directly to the
 
     
     def _iter1_(self, fn, prop, y, x, Ids, xmin, xmax,
-                ep=1e-6, Nmax=20, fx_index=1, 
+                ep=1e-6, Nmax=20, fx_index=1,
                 verbose=False, param={}):
         """Invert an inner routine.
         
@@ -2734,6 +2735,7 @@ along with temperature.
                 T,
                 Isat,
                 Ta, Tb,
+                relax=0.9,
                 param={'fn':self._h, 'p':p},
                 verbose=debug)
                 
