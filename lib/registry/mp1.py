@@ -1672,6 +1672,11 @@ other conditions, x<0 and d1 == d2.
             # T,x
             # If quality is defined, then the points MUST be saturated
             elif x is not None:
+                # Ensure that x is a legal value
+                if (x < 0 or
+                        x > 1):
+                    raise pm.utility.PMParamError('MP1: Quality is out-of-bounds.')
+
                 T,x,I = np.broadcast_arrays(T,x,True)
                 if (T>self.data['Tc']).any():
                     raise pm.utility.PMParamError(
@@ -1737,6 +1742,11 @@ other conditions, x<0 and d1 == d2.
             # p,x
             # If quality is defined, we are saturated
             elif x is not None:
+                # Ensure that x is a legal value
+                if (x < 0 or
+                        x > 1):
+                    raise pm.utility.PMParamError('MP1: Quality is out-of-bounds.')
+
                 # Ensure that p is sub-critical
                 if (p>self.data['pc']).any():
                     raise pm.utility.PMParamError('Quality cannot be specified at pressures above the critical point.')
