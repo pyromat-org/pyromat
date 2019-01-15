@@ -1697,8 +1697,8 @@ other conditions, x<0 and d1 == d2.
             # If quality is defined, then the points MUST be saturated
             elif x is not None:
                 # Ensure that x is a legal value
-                if (x < 0 or
-                        x > 1):
+                if (x.any() < 0 or
+                        x.any() > 1):
                     raise pm.utility.PMParamError('MP1: Quality is out-of-bounds.')
 
                 T,x,I = np.broadcast_arrays(T,x,True)
